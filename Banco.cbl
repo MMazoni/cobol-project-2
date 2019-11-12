@@ -79,6 +79,15 @@
                02 LINE 13 COLUMN 10 VALUE "  NOME: ".
                02 LINE 15 COLUMN 10 VALUE " SALDO: " .
 
+           01 TELA-ALTERAR-CONTA.
+               02 BLANK SCREEN.
+               02 LINE 1 COLUMN 26 VALUE
+      -            "ALTERAR CONTA CORRENTE".
+               02 LINE 7 COLUMN 10 VALUE " CODIGO: ".
+               02 LINE 9 COLUMN 10 VALUE "AGENCIA: ".
+               02 LINE 11 COLUMN 10 VALUE " CONTA: ".
+               
+
        PROCEDURE DIVISION.
        INICIO.
            PERFORM CORPO UNTIL OPCAO = 5.
@@ -96,6 +105,9 @@
            EVALUATE OPCAO
                WHEN 1
                    PERFORM CRIAR-CONTA
+                   DISPLAY TELA
+               WHEN 2
+                   PERFORM ALTERAR-CONTA
                    DISPLAY TELA
                WHEN 5
                    CONTINUE
@@ -205,6 +217,30 @@
             WRITE REG-CODIGO.
             CLOSE PROXIMO-CODIGO.
       ******************************************************************
-      * FINALIZAÇÃO DAS FUBÇÕES PARA CRIAÇÃO DE NOVA CONTA
+      * FINALIZAÇÃO DAS FUNÇÕES PARA CRIAÇÃO DE NOVA CONTA
       ******************************************************************     
+      ******************************************************************
+      *
+      * ALTERAR CONTA
+      *
+      ******************************************************************
+       ALTERAR-CONTA.
+           DISPLAY TELA-ALTERAR-CONTA.
+           MOVE " " TO AGENCIA.
+           PERFORM RECEBE-AGENCIA UNTIL AGENCIA <> " ".
+           MOVE " " TO CONTA.
+           PERFORM RECEBE-CONTA UNTIL CONTA <> " ".
+           DISPLAY "DESEJA ALTERAR A CONTA (S/N)? < >" AT 1703.
+           ACCEPT SALVAR AT 1734 WITH PROMPT AUTO.
+           MOVE FUNCTION UPPER-CASE (SALVAR) TO SALVAR.
+           IF SALVAR = "N"
+               DISPLAY TELA
+            ELSE IF SALVAR = "S"
+                DISPLAY "TESTE"
+            ELSE
+               DISPLAY "APENAS S/N!" AT 1903
+      * MELHORAR ESSA PARTE (LOOP S/N)
+               PERFORM ALTERAR-CONTA
+            END-IF.
+
        END PROGRAM CADASTRO_CONTA_CORRENTE.
