@@ -29,9 +29,9 @@
        FILE SECTION.
       * PARAMETROS PARA O ARQUIVO DE CADASTRO
        FD  ARQ-CADASTRO LABEL RECORD STANDARD
-           DATA RECORD IS REG-CADASTRO
+           DATA RECORD IS REG-CONTA
            VALUE OF FILE-ID IS "CADASTRO.DAT".
-       01 REG-CADASTRO.
+       01 REG-CONTA.
           02 CODIGO PIC 9(4) VALUES ZEROS.
           02 NOME PIC X(50) VALUES SPACES.
           02 AGENCIA PIC X(5) VALUES SPACES.
@@ -69,23 +69,14 @@
                02 BLANK SCREEN.
                02 LINE 20 COLUMN 30 VALUE "FIM DO PROGRAMA".
                
-           01 TELA-CRIAR-CONTA.
+           01 TELA-DADOS.
                02 BLANK SCREEN.
-               02 LINE 1 COLUMN 26 VALUE
-      -            "CADASTRO DE NOVA CONTA CORRENTE".
-               02 LINE 7 COLUMN 10 VALUE " CODIGO: ".
-               02 LINE 9 COLUMN 10 VALUE "AGENCIA: ".
-               02 LINE 11 COLUMN 10 VALUE " CONTA: ".
-               02 LINE 13 COLUMN 10 VALUE "  NOME: ".
-               02 LINE 15 COLUMN 10 VALUE " SALDO: " .
+               02 LINE 5 COLUMN 10 VALUE " CODIGO: ".
+               02 LINE 7 COLUMN 10 VALUE "AGENCIA: ".
+               02 LINE 9 COLUMN 10 VALUE " CONTA: ".
+               02 LINE 11 COLUMN 10 VALUE "  NOME: ".
+               02 LINE 13 COLUMN 10 VALUE " SALDO: " .
 
-           01 TELA-ALTERAR-CONTA.
-               02 BLANK SCREEN.
-               02 LINE 1 COLUMN 26 VALUE
-      -            "ALTERAR CONTA CORRENTE".
-               02 LINE 7 COLUMN 10 VALUE " CODIGO: ".
-               02 LINE 9 COLUMN 10 VALUE "AGENCIA: ".
-               02 LINE 11 COLUMN 10 VALUE " CONTA: ".
                
 
        PROCEDURE DIVISION.
@@ -124,12 +115,10 @@
       *
       ******************************************************************
        CRIAR-CONTA.
-            DISPLAY TELA-CRIAR-CONTA.
-            MOVE " " TO AGENCIA.
+            DISPLAY TELA-DADOS.
+            MOVE SPACES TO REG-CONTA.
             PERFORM RECEBE-AGENCIA UNTIL AGENCIA <> " ".
-            MOVE " " TO CONTA.
             PERFORM RECEBE-CONTA UNTIL CONTA <> " ".
-            MOVE " " TO NOME.
             PERFORM RECEBE-NOME UNTIL NOME <> " ".
             PERFORM RECEBE-SALDO.
             DISPLAY "DESEJA SALVAR O REGISTRO (S/N)? < >" AT 1703.
@@ -148,7 +137,7 @@
                 CLOSE ARQ-CADASTRO
                 OPEN OUTPUT ARQ-CADASTRO
            END-IF.
-           WRITE REG-CADASTRO
+           WRITE REG-CONTA
            INVALID KEY
                 DISPLAY "ERRO AO GRAVAR!!" AT 1903
                 STOP " "
@@ -161,7 +150,7 @@
            DISPLAY TELA.
 
        RECEBE-AGENCIA.
-           ACCEPT AGENCIA AT 0919.
+           ACCEPT AGENCIA AT 0719.
            IF AGENCIA = " "
                DISPLAY "E OBRIGATORIO DIGITAR A AGENCIA " AT 1703
                DISPLAY "(APERTE QUALQUER TECLA...)" AT 1735
@@ -170,7 +159,7 @@
            END-IF.
 
        RECEBE-CONTA.
-           ACCEPT CONTA AT 1119.
+           ACCEPT CONTA AT 0919.
            IF CONTA = " "
                DISPLAY "E OBRIGATORIO DIGITAR A CONTA " AT 1703
                DISPLAY "(APERTE QUALQUER TECLA...)" AT 1735
@@ -179,7 +168,7 @@
            END-IF.
 
        RECEBE-NOME.
-           ACCEPT NOME AT 1319.
+           ACCEPT NOME AT 1119.
            IF NOME = " "
                DISPLAY "E OBRIGATORIO DIGITAR A NOME " AT 1703
                DISPLAY "(APERTE QUALQUER TECLA...)" AT 1735
@@ -187,14 +176,14 @@
                DISPLAY SPACE ERASE EOS AT LINE 17
            END-IF.
            MOVE FUNCTION UPPER-CASE(NOME) TO NOME.
-           DISPLAY NOME AT 1319.
+           DISPLAY NOME AT 1119.
 
        RECEBE-SALDO.
-           ACCEPT SALDO-M AT 1519.
+           ACCEPT SALDO-M AT 1319.
            MOVE SALDO-M TO SALDO.
            COMPUTE SALDO = SALDO / 100.
            MOVE SALDO TO SALDO-M.
-           DISPLAY SALDO-M AT 1519.
+           DISPLAY SALDO-M AT 1319.
 
        DEFINE-PROXIMO-CODIGO.
             OPEN INPUT PROXIMO-CODIGO.
@@ -225,10 +214,9 @@
       *
       ******************************************************************
        ALTERAR-CONTA.
-           DISPLAY TELA-ALTERAR-CONTA.
-           MOVE " " TO AGENCIA.
+           DISPLAY TELA-DADOS.
+           MOVE SPACES TO REG-CONTA.
            PERFORM RECEBE-AGENCIA UNTIL AGENCIA <> " ".
-           MOVE " " TO CONTA.
            PERFORM RECEBE-CONTA UNTIL CONTA <> " ".
            DISPLAY "DESEJA ALTERAR A CONTA (S/N)? < >" AT 1703.
            ACCEPT SALVAR AT 1734 WITH PROMPT AUTO.
